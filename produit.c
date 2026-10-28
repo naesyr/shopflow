@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 #include "produit.h"
 
 #include <produit.h>
+=======
+#include "produit.h"gi
+>>>>>>> e2cbd1549541ff1709d4da8f89aa3c1520a0c3b2
 #include <stdio.h>
 
 

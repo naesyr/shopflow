@@ -16,5 +16,6 @@ typedef struct {
 } Produit;
 
 void ajouterProduit(Produit *p);
+void modifierProduit(Produit *p);
 
 #endif //PETIT_PROJET_PRODUIT_H
