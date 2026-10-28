@@ -5,6 +5,11 @@
 #ifndef PROJET_SHOPFLOW_STRUCTURES_H
 #define PROJET_SHOPFLOW_STRUCTURES_H
 
+typedef struct {
+    int jour;
+    int mois;
+    int annee;
+} Date;
 
 typedef struct {
     char rue[100];
