@@ -21,8 +21,7 @@ void supprimerEspacesBords(char *s)
     s[fin - debut] = '\0';
 }
 
-/* Lit une ligne sur stdin (sans '\n'). Retourne 0 en cas de fin de fichier.
- * Une ligne trop longue est tronquee et le reste est vide du tampon. */
+/* Lit une ligne sur stdin (sans '\n'). Retourne 0 en cas de fin de fichier. */
 int lireLigne(char *dest, size_t taille)
 {
     size_t len;
@@ -42,8 +41,7 @@ int lireLigne(char *dest, size_t taille)
     return 1;
 }
 
-/* Saisit un texte (longueur < taille). Boucle jusqu'a obtenir une saisie valide.
- * Retourne 0 si fin de fichier. */
+/* Saisit un texte (longueur < taille). Boucle jusqu'a obtenir une saisie valide. */
 int lireTexte(const char *invite, char *dest, size_t taille, int autoriserVide)
 {
     char tampon[256];
@@ -131,7 +129,7 @@ int lireFlottant(const char *invite, float min, float max, float *valeur)
     }
 }
 
-/* Pose une question oui/non. Retourne 1 pour oui, 0 pour non (ou fin de fichier). */
+/* Pose une question oui/non. Retourne 1 pour oui, 0 pour non. */
 int lireOuiNon(const char *invite)
 {
     char tampon[16];
@@ -320,7 +318,6 @@ const char *messageErreur(int code)
     default:                  return "Erreur inconnue.";
     }
 }
-
 //
 // Created by marie on 28/10/2026.
 //
