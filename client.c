@@ -1,5 +1,11 @@
 
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+#include "client.h"
+#include "commande.h"
+#include "utils.h"
 /* Agrandit dynamiquement la capacité du tableau de clients de la boutique. */
 static int agrandirRepertoire(Boutique *b)
 {
