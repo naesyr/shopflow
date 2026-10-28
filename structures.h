@@ -28,6 +28,13 @@ typedef struct {
     int   actif;             /* 0 ou 1 : statut du produit par 1 est toujours en vente ou 0 supprimer de la vente */
 } Produit;
 
+typedef struct {
+    char refProduit[12];     // Référence du produit commandé et mettre 12 car pour pour avoir de la marge et qui inclue le /0
+    char designation[60];    // Libellé figé au moment de la vente et mettre 60 car on peut mettre jusqu'à 59 et + le /0
+    int quantite;            // Quantité commandée
+    float prixUnitaireHT;    // Prix figé au moment de la vente
+    float sousTotalHT;       // quantite × prixUnitaireHT
+} LigneCommande;
 
 typedef struct {
     int numero;
