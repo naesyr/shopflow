@@ -7,12 +7,14 @@
 
 #include "types.h"
 
-void creerCommande(Boutique *b);
-void modifierLignesCommande(Boutique *b);
-void changerStatutCommande(Boutique *b);
-void annulerCommande(Boutique *b);
-void afficherDetailCommande(const Boutique *b);
+
 void calculerMontantsCommande(Commande *c);
+void creerCommande(Boutique *b);
+void annulerCommande(Boutique *b);
+void changerStatutCommande(Boutique *b);
+void modifierLignesCommande(Boutique *b);
+void afficherDetailCommande(const Boutique *b);
+
 
 
 
