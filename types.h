@@ -69,7 +69,7 @@ typedef struct {
     Adresse adresse;              // Adresse de livraison : utilisation d'une structure imbriquée pour grouper les informations de localisation
     int pointsFidelite;           // Points de fidélité cumulés : entier positif ou nul (>= 0), mis à jour par calcul
     int nbCommandes;              // Nombre de commandes du client : entier positif ou nul (>= 0)
-    capaciteCommandes;        // Taille du tableau alloué : entier supérieur ou égal au nombre de commandes pour gérer le redimensionnement
+    int capaciteCommandes;        // Taille du tableau alloué : entier supérieur ou égal au nombre de commandes pour gérer le redimensionnement
     Commande *commandes;        // Historique des commandes : pointeur alloué dynamiquement (via malloc) pour s'adapter au nombre variable de commandes
     int actif;                    // Statut du client : entier valant 0 ou 1 pour gérer la suppression logique sans effacer les données
 } Client;
