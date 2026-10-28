@@ -13,7 +13,7 @@ typedef struct {
 
 typedef struct {
     char rue[100];
-    char ville[51];
+    char ville[170];
     char codePostal[9]; //pour prendre en compte tout ls pays (max = Royaume-unis, 8 chiffre), +1 pour le /0
     char pays[50];
 } Adresse;
