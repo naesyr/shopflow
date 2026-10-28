@@ -27,12 +27,12 @@ typedef struct {
 typedef struct {
     int numero;
     int numClient;
-    //Date dateCommande;
+    Date dateCommande;
     /* utilisation de la structure date définie avant*/
     char statut[20];
     int nbLignes;
     int capaciteLignes;
-    //LigneCommande *lignes;
+    LigneCommande *lignes;
     /*
     pointeur vers la structure LigneCommande pour la création
     d'un tableau dynamique car on ne connait pas la taille de la commande en avance
