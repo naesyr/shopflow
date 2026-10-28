@@ -39,12 +39,12 @@ typedef struct {
 typedef struct {
     int numero;
     int numClient;
-    //Date dateCommande;
+    Date dateCommande;
     /* utilisation de la structure date définie avant*/
     char statut[20];
     int nbLignes;
     int capaciteLignes;
-    //LigneCommande *lignes;
+    LigneCommande *lignes;
     /*
     pointeur vers la structure LigneCommande pour la création
     d'un tableau dynamique car on ne connait pas la taille de la commande en avance
@@ -59,6 +59,7 @@ typedef struct {
     Adresse adresseLivraison;
 } Commande;
 
+// test branching
 typedef struct {
     int idClient;                 // Identifiant du client : type 'int' car c'est un entier unique > 0
     char nom[50];             // Nom de famille : tableau de 50 caractères pour respecter la limite de 49 car. max (+1 pour le caractère nul '\0'), non vide
