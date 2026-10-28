@@ -1,13 +1,6 @@
-/* client.c - CRUD des clients, adresses de livraison, points de fidelite */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <limits.h>
-#include "client.h"
-#include "commande.h"
-#include "utils.h"
 
-/* Double la capacite du repertoire clients (realloc controle). */
+
+/* Agrandit dynamiquement la capacité du tableau de clients de la boutique. */
 static int agrandirRepertoire(Boutique *b)
 {
     int nouvelle = (b->capaciteClients == 0) ? CAPACITE_INITIALE : b->capaciteClients * 2;
@@ -21,7 +14,7 @@ static int agrandirRepertoire(Boutique *b)
     return RES_OK;
 }
 
-/* Cherche un client par identifiant (actif ou non). NULL si absent. */
+/* Cherche un client par  son identifiant ( qu'il soit actif ou non). NULL si absent. */
 Client *trouverClient(const Boutique *b, int idClient)
 {
     int i;
@@ -34,14 +27,14 @@ Client *trouverClient(const Boutique *b, int idClient)
     return NULL;
 }
 
-/* Adresse complete : rue, ville, pays non vides et code postal a 5 chiffres. */
+/* Vérifie si l'adresse est complète (rue, ville, pays non vides et code postal à 5 chiffres */
 int adresseEstValide(const Adresse *a)
 {
     return a->rue[0] != '\0' && a->ville[0] != '\0' && a->pays[0] != '\0'
         && estChaineDeChiffres(a->codePostal, 5);
 }
 
-/* Controle les contraintes d'un client (hors unicite de l'email). */
+/* Controle les contraintes d'un client (hors du l'email). */
 int clientEstValide(const Client *c)
 {
     return c->nom[0] != '\0' && c->prenom[0] != '\0'

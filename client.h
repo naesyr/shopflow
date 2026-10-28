@@ -8,7 +8,7 @@
 
 /* ---- Acces / donnees ---- */
 Client *trouverClient(const Boutique *b, int idClient); //Recherche un client par son identifiant unique dans la boutique.
-int  adresseEstValide(const Adresse *a); //Vérifie la validité d'une adresse (champs obligatoires, format, etc.).
+int  adresseEstValide(const Adresse *a); //Vérifie la validité d'une adresse (champs obligatoires, format, ...).
 int  clientEstValide(const Client *c); // Vérifie la validité des données d'un client.
 
 int  emailExiste(const Boutique *b, const char *email, int idIgnore); //Vérifie si une adresse email existe déjà dans la boutique.
@@ -27,6 +27,6 @@ void saisirEtAjouterClient(Boutique *b);//Interface interactive pour saisir et a
 void modifierClient(Boutique *b);//
 void supprimerClientInteractif(Boutique *b);//Interface interactive pour modifier les informations d'un client existant.
 
-void afficherListeClients(const Boutique *b);//
+void afficherListeClients(const Boutique *b);//Interface interactive pour supprimer un client de la boutique.
 void afficherClientDetaille(const Boutique *b);//Affiche la liste de tous les clients enregistrés dans la boutique.
 #endif //PETIT_PROJET_CLIENT_H
