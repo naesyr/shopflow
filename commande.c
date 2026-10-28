@@ -6,9 +6,6 @@
 #include <string.h>
 #include "types.h"
 #include "commande.h"
-#include "utils.h"
-#include "client.h"
-#include "produit.h"
 /* Calcule les sous-totaux, la remise par palier, la TVA, les frais de port et le TTC */
 void calculerMontantsCommande(Commande *c) {
     c->montantBrutHT = 0.0;

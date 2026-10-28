@@ -19,7 +19,13 @@
  * ========================================================================== */
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
+#include "types.h"
+#include "statistique.h"
+#include "commande.h"
+#include "utils.h"
+#include "client.h"
+#include "produit.h"
 /* --------------------------------------------------------------------------
  * Lecture d'un choix au clavier (version simple, suffisant pour demarrer).
  * A remplacer plus tard par une saisie securisee (module utils.c).
@@ -188,3 +194,5 @@ int main(void)
 
     return EXIT_SUCCESS;
 }
+
+
