@@ -50,7 +50,7 @@ int clientEstValide(const Client *c)
 {
     return c->nom[0] != '\0' && c->prenom[0] != '\0'
         && estEmailValide(c->email)
-        && estChaineDeChiffres(c->telephone, 10)
+        && estChaineDeChiffres(c->telephone, 11)
         && adresseEstValide(&c->adresse);
 }
 

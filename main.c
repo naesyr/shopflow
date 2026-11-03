@@ -47,7 +47,7 @@ static void menuProduits(Boutique *b)
             case 3: supprimerProduitInteractif(b);   break;
             case 4: afficherCatalogue(b);             break;
             case 5: rechercherProduitInteractif(b);   break;
-            case 6: rechercheMulticritere(b);        break;
+            /*case 6: rechercheMulticritere(b);        break;*/
             case 0:                                   break;
             default: printf("  [!] Choix invalide.\n"); break;
         }
@@ -128,7 +128,7 @@ static void menuStatistiques(Boutique *b)
             case 2: afficherPalmaresProduits(b); break;
             case 3: afficherPalmaresClients(b);  break;
             case 4: afficherAlertesStock(b);     break;
-            case 5: afficherStatCategorie(b);    break;
+            case 5: afficherStatsCategories(b);    break;
             case 0:                              break;
             default: printf("  [!] Choix invalide.\n"); break;
         }
