@@ -4,5 +4,7 @@
 
 #ifndef PETIT_PROJET_INITIALISATION_H
 #define PETIT_PROJET_INITIALISATION_H
-
+void initialiserBoutiqueVide(Boutique *b, const char *nom);
+int  initialiserDonneesTest(Boutique *b);
+void detruireBoutique(Boutique *b);
 #endif //PETIT_PROJET_INITIALISATION_H
