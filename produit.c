@@ -176,6 +176,14 @@ void rechercherProduitInteractif(Boutique *b) {
     }
     printf("%d produit(s) trouve(s).\n", trouves);
 }
+// Dans produit.c
+void afficherProduit(Produit *p) {
+    printf("----------------------------------------\n");
+    printf("Nom : %s\n", p->reference);
+    printf("Categorie : %s\n", p->categorie);
+    printf("Prix HT : %.2f €\n", p->prixUnitaireHT);
+    printf("Stock : %d\n", p->quantiteStock);
+}
 void rechercheMultiCriteres(const Boutique *b)
 {
     char categorie[30];
