@@ -2,8 +2,8 @@
 // Created by marie on 28/10/2026.
 //
 
-#ifndef PETIT_PROJET_PRODUIT_H
-#define PETIT_PROJET_PRODUIT_H
+#ifndef PRODUIT_H
+#define PRODUIT_H
 
 typedef struct {
     char  reference[12];     /* unique, non vide : référence commerciale , 12 car pour avoir de la marge */
@@ -18,4 +18,4 @@ typedef struct {
 void ajouterProduit(Produit *p);
 void modifierProduit(Produit *p);
 
-#endif //PETIT_PROJET_PRODUIT_H
+#endif //PRODUIT_H
