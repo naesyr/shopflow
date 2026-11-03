@@ -1,18 +1,23 @@
-//
-// Created by marie on 28/10/2026.
-//
-
 #ifndef PRODUIT_H
 #define PRODUIT_H
+
 #include "types.h"
 
+/* --- Recherche et verification --- */
+Produit *trouverProduit(const Boutique *b, const char *reference);
+int referenceExiste(const Boutique *b, const char *reference);
+int produitEstUtilise(const Boutique *b, const char *reference);
 
-void afficherProduit(Produit p);
-void afficherCatalogue(Produit *catalogue, int nbProduits);
-int rechercherProduitParRef(Produit *catalogue, int nbProduits, const char *ref);
-void ajouterProduit(Produit **catalogue, int *nbProduits, int *capacite);
-void mettreAJourProduit(Produit *catalogue, int nbProduits);
-void supprimerProduit(Produit *catalogue, int nbProduits, const char *ref);
-void rechercheMultiCriteres(const Boutique *b);
-int trouverIndexProduit(const Boutique *b, const char *reference);
-#endif //PRODUIT_H
+/* --- Operations CRUD --- */
+int ajouterProduit(Boutique *b, const Produit *modele);
+int modifierProduit(Boutique *b, const char *reference, float nouveauPrix, int nouveauStock, int nouveauSeuil);
+int supprimerProduit(Boutique *b, const char *reference);
+
+/* --- Fonctions interactives (Menus) --- */
+void saisirEtAjouterProduit(Boutique *b);
+void modifierProduitInteractif(Boutique *b);
+void supprimerProduitInteractif(Boutique *b);
+void afficherCatalogue(const Boutique *b);
+void rechercherProduitInteractif(Boutique *b);
+
+#endif // PRODUIT_H

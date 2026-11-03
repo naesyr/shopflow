@@ -1,144 +1,178 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
+#include "types.h"
 #include "produit.h"
+#include "utils.h"
 
-void afficherProduit(Produit p) {
-    if (p.actif == 1) {
-        printf("Ref: %s | Nom: %s | Cat: %s | Prix HT: %.2f EUR | Stock: %d (Seuil: %d)\n",
-               p.reference, p.designation, p.categorie, p.prixUnitaireHT, p.quantiteStock, p.seuilAlerte);
+#define CAPACITE_INITIALE 10
+
+static int agrandirCatalogue(Boutique *b) {
+    int nouvelle = ((*b).capaciteProduits == 0) ? CAPACITE_INITIALE : (*b).capaciteProduits * 2;
+    Produit *tmp = (Produit *)realloc((*b).produits, (size_t)nouvelle * sizeof(Produit));
+    if (tmp == NULL) {
+        return RES_ERR_MEMOIRE;
     }
+    (*b).produits = tmp;
+    (*b).capaciteProduits = nouvelle;
+    return RES_OK;
 }
 
-void afficherCatalogue(Produit *catalogue, int nbProduits) {
-    printf("\n=== CATALOGUE DES PRODUITS ===\n");
-    for (int i = 0; i < nbProduits; i++) {
-        if (catalogue[i].actif == 1) {
-            afficherProduit(catalogue[i]);
+Produit *trouverProduit(const Boutique *b, const char *reference) {
+    for (int i = 0; i < (*b).nbProduits; i++) {
+        if (strcmp((*b).produits[i].reference, reference) == 0) {
+            return &(*b).produits[i];
         }
     }
-    printf("==============================\n");
+    return NULL;
 }
 
-int rechercherProduitParRef(Produit *catalogue, int nbProduits, const char *ref) {
-    for (int i = 0; i < nbProduits; i++) {
-        if (strcmp(catalogue[i].reference, ref) == 0 && catalogue[i].actif == 1) {
-            return i;
+int referenceExiste(const Boutique *b, const char *reference) {
+    return trouverProduit(b, reference) != NULL;
+}
+
+int produitEstUtilise(const Boutique *b, const char *reference) {
+    for (int i = 0; i < (*b).nbClients; i++) {
+        for (int j = 0; j < (*b).clients[i].nbCommandes; j++) {
+            const Commande *cmd = &(*b).clients[i].commandes[j];
+            if (strcmp((*cmd).statut, "ANNULEE") != 0) {
+                for (int k = 0; k < (*cmd).nbLignes; k++) {
+                    if (strcmp((*cmd).lignes[k].refProduit, reference) == 0) {
+                        return 1;
+                    }
+                }
+            }
         }
     }
-    return -1;
+    return 0;
 }
 
-void saisirProduit(Produit *p) {
-    printf("Donner la reference du produit : ");
-    scanf("%s", p->reference);
-
-    printf("Donner le nom du produit : ");
-    scanf("%s", p->designation);
-
-    printf("Donner la categorie du produit : ");
-    scanf("%s", p->categorie);
-
-    printf("Donner le prix HT : ");
-    scanf("%f", &p->prixUnitaireHT);
-
-    printf("Combien y a-t-il de produits en stock : ");
-    scanf("%d", &p->quantiteStock);
-
-    printf("Quel est le seuil d'alerte : ");
-    scanf("%d", &p->seuilAlerte);
-
-    printf("Le produit est-il actif : 0=non, 1=oui : ");
-    scanf("%d", &p->actif);
-}
-
-void ajouterProduit(Produit **catalogue, int *nbProduits, int *capacite) {
-    if (*nbProduits >= *capacite) {
-        *capacite *= 2;
-        Produit *temp = (Produit *)realloc(*catalogue, (*capacite) * sizeof(Produit));
-        if (temp == NULL) {
-            printf("Erreur lors de l'allocation mémoire pour le catalogue.\n");
-            return;
-        }
-        *catalogue = temp;
+int ajouterProduit(Boutique *b, const Produit *modele) {
+    if (referenceExiste(b, (*modele).reference)) {
+        return RES_ERR_DOUBLON;
     }
+    if ((*b).nbProduits >= (*b).capaciteProduits) {
+        int r = agrandirCatalogue(b);
+        if (r != RES_OK) return r;
+    }
+    (*b).produits[(*b).nbProduits] = *modele;
+    (*b).produits[(*b).nbProduits].actif = 1;
+    (*b).nbProduits++;
+    return RES_OK;
+}
 
+void saisirEtAjouterProduit(Boutique *b) {
     Produit p;
-    saisirProduit(&p);
+    memset(&p, 0, sizeof(p));
+    afficherTitre("AJOUT D'UN PRODUIT");
 
-    if (rechercherProduitParRef(*catalogue, *nbProduits, p.reference) != -1) {
-        printf("Erreur : Un produit avec cette reference existe deja.\n");
+    if (!lireTexte("Reference (ex: PRD-0001) : ", p.reference, sizeof(p.reference), 0)) return;
+    if (referenceExiste(b, p.reference)) {
+        printf("Erreur : Cette reference existe deja.\n");
         return;
     }
+    if (!lireTexte("Designation : ", p.designation, sizeof(p.designation), 0)) return;
+    if (!lireTexte("Categorie : ", p.categorie, sizeof(p.categorie), 0)) return;
 
-    (*catalogue)[*nbProduits] = p;
-    (*nbProduits)++;
-    printf("Produit ajoute avec succes !\n");
+    if (!lireFlottant("Prix unitaire HT : ", 0.01f, 100000.0f, &p.prixUnitaireHT)) return;
+    if (!lireEntier("Quantite en stock : ", 0, INT_MAX, &p.quantiteStock)) return;
+    if (!lireEntier("Seuil d'alerte stock : ", 0, INT_MAX, &p.seuilAlerte)) return;
+
+    int r = ajouterProduit(b, &p);
+    if (r == RES_OK) {
+        printf("Produit %s ajoute avec succes.\n", p.reference);
+    } else {
+        printf("Echec de l'ajout : %s\n", messageErreur(r));
+    }
 }
 
-void mettreAJourProduit(Produit *catalogue, int nbProduits) {
+void modifierProduitInteractif(Boutique *b) {
     char ref[12];
-    printf("Entrer la reference du produit a modifier : ");
-    scanf("%s", ref);
+    afficherTitre("MODIFICATION D'UN PRODUIT");
+    if (!lireTexte("Reference du produit : ", ref, sizeof(ref), 0)) return;
 
-    int index = rechercherProduitParRef(catalogue, nbProduits, ref);
-    if (index == -1) {
+    Produit *p = trouverProduit(b, ref);
+    if (p == NULL || !(*p).actif) {
         printf("Produit introuvable.\n");
         return;
     }
 
-    printf("Modification pour le produit : %s\n", catalogue[index].designation);
-    printf("Nouveau prix HT : ");
-    scanf("%f", &catalogue[index].prixUnitaireHT);
-    printf("Nouvelle quantite en stock : ");
-    scanf("%d", &catalogue[index].quantiteStock);
-    printf("Nouveau seuil d'alerte : ");
-    scanf("%d", &catalogue[index].quantiteStock);
-    scanf("%d", &catalogue[index].seuilAlerte);
+    printf("Produit actuel : %s | Prix: %.2f EUR | Stock: %d | Seuil: %d\n",
+           (*p).designation, (*p).prixUnitaireHT, (*p).quantiteStock, (*p).seuilAlerte);
 
-    printf("Produit mis a jour avec succes !\n");
+    lireFlottant("Nouveau prix HT : ", 0.01f, 100000.0f, &(*p).prixUnitaireHT);
+    lireEntier("Nouveau stock : ", 0, INT_MAX, &(*p).quantiteStock);
+    lireEntier("Nouveau seuil d'alerte : ", 0, INT_MAX, &(*p).seuilAlerte);
+
+    printf("Produit %s mis a jour.\n", ref);
 }
 
-void supprimerProduit(Produit *catalogue, int nbProduits, const char *ref) {
-    int index = rechercherProduitParRef(catalogue, nbProduits, ref);
-    if (index == -1) {
+void supprimerProduitInteractif(Boutique *b) {
+    char ref[12];
+    afficherTitre("SUPPRESSION LOGIQUE D'UN PRODUIT");
+    if (!lireTexte("Reference du produit a supprimer : ", ref, sizeof(ref), 0)) return;
+
+    Produit *p = trouverProduit(b, ref);
+    if (p == NULL || !(*p).actif) {
         printf("Produit introuvable.\n");
         return;
     }
 
-    catalogue[index].actif = 0;
-    printf("Produit supprime (logiquement) avec succes.\n");
-}
-void rechercheMultiCriteres(const Boutique *b)
-{
-    char categorie[30];
-    float pmin, pmax;
-    int enStock, i, n = 0;
+    if (produitEstUtilise(b, ref)) {
+        printf("Refuse : ce produit est present dans au moins une commande active.\n");
+        return;
+    }
 
-    printf("\n=== RECHERCHE MULTI-CRITERES ===\n");
-    printf("Categorie (* = toutes) : ");
-    scanf("%s", categorie);
-    for (;;) {
-        printf("Prix HT minimum : ");
-        scanf("%f", &pmin);
-        printf("Prix HT maximum : ");
-        scanf("%f", &pmax);
-        if (pmin <= pmax) {
-            break;
+    (*p).actif = 0;
+    printf("Produit %s desactive (suppression logique).\n", ref);
+}
+
+void afficherCatalogue(const Boutique *b) {
+    afficherTitre("CATALOGUE DES PRODUITS");
+    printf("%-12s %-30s %-15s %10s %7s %7s %s\n",
+           "Reference", "Designation", "Categorie", "Prix HT", "Stock", "Seuil", "Alerte");
+    afficherSeparateur();
+
+    int n = 0;
+    float valeurTotaleHT = 0.0;
+
+    for (int i = 0; i < (*b).nbProduits; i++) {
+        const Produit *p = &(*b).produits[i];
+        if (!(*p).actif) continue;
+
+        char alerte[5] = "OK";
+        if ((*p).quantiteStock <= (*p).seuilAlerte) {
+            strcpy(alerte, "/!\\");
         }
-        printf("  Le minimum doit etre inferieur ou egal au maximum.\n");
-    }
-    printf("Uniquement les produits en stock (1=oui, 0=non) : ");
-    scanf("%d", &enStock);
 
-    for (i = 0; i < b->nbProduits; i++) {
-        const Produit *p = &b->produits[i];
-        if (!p->actif) continue;
-        if (strcmp(categorie, "*") != 0 && strcmp(p->categorie, categorie) != 0) continue;
-        if (p->prixUnitaireHT < pmin || p->prixUnitaireHT > pmax) continue;
-        if (enStock && p->quantiteStock <= 0) continue;
-        afficherProduit(*p);
+        printf("%-12s %-30.30s %-15.15s %10.2f %7d %7d   %s\n",
+               (*p).reference, (*p).designation, (*p).categorie,
+               (*p).prixUnitaireHT, (*p).quantiteStock, (*p).seuilAlerte, alerte);
         n++;
+        valeurTotaleHT += ((*p).quantiteStock * (*p).prixUnitaireHT);
     }
-    printf("%d resultat(s).\n", n);
+    printf("%d produit(s) actif(s) en catalogue. Valeur totale du stock : %.2f EUR HT\n", n, valeurTotaleHT);
+}
+
+void rechercherProduitInteractif(Boutique *b) {
+    char motCle[60];
+    afficherTitre("RECHERCHE DE PRODUIT");
+    if (!lireTexte("Entrez un mot-cle ou une reference : ", motCle, sizeof(motCle), 0)) return;
+
+    printf("%-12s %-30s %-15s %10s %7s\n", "Reference", "Designation", "Categorie", "Prix HT", "Stock");
+    afficherSeparateur();
+
+    int trouves = 0;
+    for (int i = 0; i < (*b).nbProduits; i++) {
+        const Produit *p = &(*b).produits[i];
+        if (!(*p).actif) continue;
+
+        if (strstr((*p).reference, motCle) != NULL || strstr((*p).designation, motCle) != NULL) {
+            printf("%-12s %-30.30s %-15.15s %10.2f %7d\n",
+                   (*p).reference, (*p).designation, (*p).categorie, (*p).prixUnitaireHT, (*p).quantiteStock);
+            trouves++;
+        }
+    }
+    printf("%d produit(s) trouve(s).\n", trouves);
 }
