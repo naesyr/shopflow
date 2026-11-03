@@ -154,7 +154,7 @@ void chiffreAffairesClient(const Client *c, float *ht, float *ttc)
     int i;
 
     for (i = 0; i < c->nbCommandes; i++) {
-        if (commandeEstActive(&c->commandes[i])) {
+        if (strcmp(c->commandes[i].statut, "ANNULEE") != 0) {
             sommeHT += (double)c->commandes[i].montantHT;
             sommeTTC += (double)c->commandes[i].montantTTC;
         }

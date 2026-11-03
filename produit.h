@@ -14,5 +14,5 @@ void ajouterProduit(Produit **catalogue, int *nbProduits, int *capacite);
 void mettreAJourProduit(Produit *catalogue, int nbProduits);
 void supprimerProduit(Produit *catalogue, int nbProduits, const char *ref);
 void rechercheMultiCriteres(const Boutique *b);
-
+int trouverIndexProduit(const Boutique *b, const char *reference);
 #endif //PRODUIT_H

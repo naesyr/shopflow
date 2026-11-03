@@ -25,6 +25,7 @@ void supprimerEspacesBords(char *s);
 int lireLigne(char *dest, size_t taille);
 int lireTexte(const char *invite, char *dest, size_t taille, int autoriserVide);
 int lireEntier(const char *invite, int min, int max, int *valeur);
+void lireChaine(char *chaine, int tailleMax);
 int lireFlottant(const char *invite, float min, float max, float *valeur);
 int lireOuiNon(const char *invite);
 int estBissextile(int annee);
