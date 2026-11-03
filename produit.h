@@ -15,7 +15,11 @@ typedef struct {
     int   actif;             /* 0 ou 1 : statut du produit par 1 est toujours en vente ou 0 supprimer de la vente */
 } Produit;
 
-void ajouterProduit(Produit *p);
-void modifierProduit(Produit *p);
+void afficherProduit(Produit p);
+void afficherCatalogue(Produit *catalogue, int nbProduits);
+int rechercherProduitParRef(Produit *catalogue, int nbProduits, const char *ref);
+void ajouterProduit(Produit **catalogue, int *nbProduits, int *capacite);
+void mettreAJourProduit(Produit *catalogue, int nbProduits);
+void supprimerProduit(Produit *catalogue, int nbProduits, const char *ref);
 
 #endif //PETIT_PROJET_PRODUIT_H
