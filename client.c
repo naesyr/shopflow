@@ -50,7 +50,7 @@ int clientEstValide(const Client *c)
 {
     return c->nom[0] != '\0' && c->prenom[0] != '\0'
         && estEmailValide(c->email)
-        && estChaineDeChiffres(c->telephone, 10)
+        && estChaineDeChiffres(c->telephone, 11)
         && adresseEstValide(&c->adresse);
 }
 
@@ -170,7 +170,7 @@ static int saisirTelephone(char *dest, size_t taille)
         if (!lireTexte("Telephone (10 chiffres) : ", dest, taille, 0)) {
             return 0;
         }
-        if (estChaineDeChiffres(dest, 10)) {
+        if (estChaineDeChiffres(dest, 11)) {
             return 1;
         }
         printf("  /!\\ Le telephone doit contenir exactement 10 chiffres.\n");

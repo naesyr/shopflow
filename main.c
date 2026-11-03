@@ -36,17 +36,19 @@ static void menuProduits(Boutique *b)
         printf("  3. Supprimer un produit\n");
         printf("  4. Afficher le catalogue\n");
         printf("  5. Rechercher un produit\n");
+        printf("  6. Recherche multi-criteres\n");
         printf("  0. Retour au menu principal\n");
         choix = lireChoix();
 
         switch (choix)
         {
-            case 1: saisirEtAjouterProduit(b);    break;
-            case 2: modifierProduitInteractif(b); break;
-            case 3: supprimerProduitInteractif(b);break;
-            case 4: afficherCatalogue(b);          break;
-            case 5: rechercherProduitInteractif(b);break;
-            case 0:                                break;
+            case 1: saisirEtAjouterProduit(b);       break;
+            case 2: modifierProduitInteractif(b);    break;
+            case 3: supprimerProduitInteractif(b);   break;
+            case 4: afficherCatalogue(b);             break;
+            case 5: rechercherProduitInteractif(b);   break;
+            /*case 6: rechercheMulticritere(b);        break;*/
+            case 0:                                   break;
             default: printf("  [!] Choix invalide.\n"); break;
         }
     } while (choix != 0);
@@ -116,6 +118,7 @@ static void menuStatistiques(Boutique *b)
         printf("  2. Palmares des produits\n");
         printf("  3. Palmares des clients\n");
         printf("  4. Alertes de stock\n");
+        printf("  5. Statistiques par categorie\n");
         printf("  0. Retour au menu principal\n");
         choix = lireChoix();
 
@@ -125,6 +128,7 @@ static void menuStatistiques(Boutique *b)
             case 2: afficherPalmaresProduits(b); break;
             case 3: afficherPalmaresClients(b);  break;
             case 4: afficherAlertesStock(b);     break;
+            case 5: afficherStatsCategories(b);    break;
             case 0:                              break;
             default: printf("  [!] Choix invalide.\n"); break;
         }
