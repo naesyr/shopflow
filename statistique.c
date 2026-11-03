@@ -176,3 +176,27 @@ void afficherPalmaresClients(const Boutique *b) {
 
     free(stats);
 }
+/* Affiche le classement des categories. */
+void afficherStatsCategories(const Boutique *b)
+{
+    int n, i;
+    StatCategorie *stats = construireStatsCategories(b, &n);
+
+    afficherTitre("STATISTIQUES PAR CATEGORIE");
+    if (n < 0) {
+        printf("Erreur : %s\n", messageErreur(RES_ERR_MEMOIRE));
+        return;
+    }
+    if (n == 0) {
+        printf("Aucune vente.\n");
+        return;
+    }
+    trierStatsCategories(stats, n);
+    printf("%-16s %12s %18s\n", "Categorie", "Qte vendue", "CA brut HT (EUR)");
+    afficherSeparateur();
+    for (i = 0; i < n; i++) {
+        printf("%-16.16s %12d %18.2f\n", stats[i].categorie, stats[i].quantite,
+               (double)stats[i].caBrutHT);
+    }
+    free(stats);
+}
