@@ -11,5 +11,6 @@ void calculerChiffreAffaires(const Boutique *b);
 void afficherPalmaresProduits(const Boutique *b);
 void afficherPalmaresClients(const Boutique *b);
 void afficherAlertesStock(const Boutique *b);
+void afficherStatsCategories(const Boutique *b);
 
 #endif //STATISTIQUE_H
