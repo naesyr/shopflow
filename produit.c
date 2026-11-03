@@ -176,3 +176,36 @@ void rechercherProduitInteractif(Boutique *b) {
     }
     printf("%d produit(s) trouve(s).\n", trouves);
 }
+void rechercheMultiCriteres(const Boutique *b)
+{
+    char categorie[30];
+    float pmin, pmax;
+    int enStock, i, n = 0;
+
+    printf("\n=== RECHERCHE MULTI-CRITERES ===\n");
+    printf("Categorie (* = toutes) : ");
+    scanf("%s", categorie);
+    for (;;) {
+        printf("Prix HT minimum : ");
+        scanf("%f", &pmin);
+        printf("Prix HT maximum : ");
+        scanf("%f", &pmax);
+        if (pmin <= pmax) {
+            break;
+        }
+        printf("  Le minimum doit etre inferieur ou egal au maximum.\n");
+    }
+    printf("Uniquement les produits en stock (1=oui, 0=non) : ");
+    scanf("%d", &enStock);
+
+    for (i = 0; i < b->nbProduits; i++) {
+        const Produit *p = &b->produits[i];
+        if (!p->actif) continue;
+        if (strcmp(categorie, "*") != 0 && strcmp(p->categorie, categorie) != 0) continue;
+        if (p->prixUnitaireHT < pmin || p->prixUnitaireHT > pmax) continue;
+        if (enStock && p->quantiteStock <= 0) continue;
+        afficherProduit(*p);
+        n++;
+    }
+    printf("%d resultat(s).\n", n);
+}

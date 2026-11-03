@@ -19,5 +19,6 @@ void modifierProduitInteractif(Boutique *b);
 void supprimerProduitInteractif(Boutique *b);
 void afficherCatalogue(const Boutique *b);
 void rechercherProduitInteractif(Boutique *b);
+void rechercheMultiCriteres(const Boutique *b);
 
 #endif // PRODUIT_H
