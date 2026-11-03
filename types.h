@@ -2,8 +2,8 @@
 // Created by byakko on 27/10/2026.
 //
 
-#ifndef PROJET_SHOPFLOW_STRUCTURES_H
-#define PROJET_SHOPFLOW_STRUCTURES_H
+#ifndef STRUCTURES_H
+#define STRUCTURES_H
 
 typedef struct {
     int jour;
@@ -86,4 +86,4 @@ typedef struct {
 } Boutique;
 
 
-#endif //PROJET_SHOPFLOW_STRUCTURES_H
+#endif //STRUCTURES_H

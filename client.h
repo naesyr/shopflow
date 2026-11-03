@@ -2,8 +2,8 @@
 // Created by marie on 28/10/2026.
 //
 
-#ifndef PETIT_PROJET_CLIENT_H
-#define PETIT_PROJET_CLIENT_H
+#ifndef CLIENT_H
+#define CLIENT_H
 #include "types.h"
 
 /* ---- Acces / donnees ---- */
@@ -29,4 +29,4 @@ void supprimerClientInteractif(Boutique *b);//Interface interactive pour modifie
 
 void afficherListeClients(const Boutique *b);//Interface interactive pour supprimer un client de la boutique.
 void afficherClientDetaille(const Boutique *b);//Affiche la liste de tous les clients enregistrés dans la boutique.
-#endif //PETIT_PROJET_CLIENT_H
+#endif //CLIENT_H
