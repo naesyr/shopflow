@@ -7,6 +7,7 @@
 #include "types.h"
 #include "statistique.h"
 
+
 void calculerChiffreAffaires(const Boutique *b) {
     float totalHT = 0.0, totalTTC = 0.0;
 
@@ -176,15 +177,90 @@ void afficherPalmaresClients(const Boutique *b) {
 
     free(stats);
 }
-/* Affiche le classement des categories. */
+typedef struct {
+    char  categorie[30];
+    int   quantite;
+    float caBrutHT;
+} StatCategorie;
+
+/* Quantites vendues et CA brut HT par categorie (commandes ANNULEE exclues). */
+static StatCategorie *construireStatsCategories(const Boutique *b, int *nb)
+{
+    StatCategorie *tab = NULL;
+    int n = 0, cap = 0;
+
+    for (int i = 0; i < b->nbClients; i++) {
+        for (int j = 0; j < b->clients[i].nbCommandes; j++) {
+            const Commande *c = &b->clients[i].commandes[j];
+            if (strcmp(c->statut, "ANNULEE") == 0) {
+                continue;
+            }
+            for (int k = 0; k < c->nbLignes; k++) {
+                const LigneCommande *l = &c->lignes[k];
+                const char *cat = "Inconnue";
+
+                /* retrouver la categorie du produit vendu */
+                for (int p = 0; p < b->nbProduits; p++) {
+                    if (strcmp(b->produits[p].reference, l->refProduit) == 0) {
+                        cat = b->produits[p].categorie;
+                        break;
+                    }
+                }
+                /* categorie deja presente dans le tableau ? */
+                int idx;
+                for (idx = 0; idx < n; idx++) {
+                    if (strcmp(tab[idx].categorie, cat) == 0) {
+                        break;
+                    }
+                }
+                if (idx == n) {                       /* nouvelle categorie */
+                    if (n >= cap) {
+                        int nouvelle = (cap == 0) ? 4 : cap * 2;
+                        StatCategorie *tmp = realloc(tab, (size_t)nouvelle * sizeof *tab);
+                        if (tmp == NULL) {
+                            free(tab);
+                            *nb = -1;
+                            return NULL;
+                        }
+                        tab = tmp;
+                        cap = nouvelle;
+                    }
+                    strcpy(tab[n].categorie, cat);
+                    tab[n].quantite = 0;
+                    tab[n].caBrutHT = 0.0f;
+                    n++;
+                }
+                tab[idx].quantite += l->quantite;
+                tab[idx].caBrutHT += l->sousTotalHT;
+            }
+        }
+    }
+    *nb = n;
+    return tab;
+}
+
+/* Tri par insertion : CA brut decroissant. */
+static void trierStatsCategories(StatCategorie *t, int n)
+{
+    for (int i = 1; i < n; i++) {
+        StatCategorie cle = t[i];
+        int j = i - 1;
+        while (j >= 0 && t[j].caBrutHT < cle.caBrutHT) {
+            t[j + 1] = t[j];
+            j--;
+        }
+        t[j + 1] = cle;
+    }
+}
+
 void afficherStatsCategories(const Boutique *b)
 {
-    int n, i;
+    int n;
     StatCategorie *stats = construireStatsCategories(b, &n);
 
-    afficherTitre("STATISTIQUES PAR CATEGORIE");
+    printf("\n==== STATISTIQUES PAR CATEGORIE ====\n");
     if (n < 0) {
-        printf("Erreur : %s\n", messageErreur(RES_ERR_MEMOIRE));
+        printf("Erreur : allocation memoire impossible.\n");
         return;
     }
     if (n == 0) {
@@ -193,8 +269,8 @@ void afficherStatsCategories(const Boutique *b)
     }
     trierStatsCategories(stats, n);
     printf("%-16s %12s %18s\n", "Categorie", "Qte vendue", "CA brut HT (EUR)");
-    afficherSeparateur();
-    for (i = 0; i < n; i++) {
+    printf("----------------------------------------------\n");
+    for (int i = 0; i < n; i++) {
         printf("%-16.16s %12d %18.2f\n", stats[i].categorie, stats[i].quantite,
                (double)stats[i].caBrutHT);
     }
