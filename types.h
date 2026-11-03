@@ -38,7 +38,7 @@ typedef struct {
 
 typedef struct {
     int numero;
-    int numClient;
+    int idClient;
     Date dateCommande;
     /* utilisation de la structure date définie avant*/
     char statut[20];

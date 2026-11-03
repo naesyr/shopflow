@@ -6,6 +6,9 @@
 #include <string.h>
 #include "types.h"
 #include "commande.h"
+#include "utils.h"
+#include "client.h"
+#include "produit.h"
 /* Calcule les sous-totaux, la remise par palier, la TVA, les frais de port et le TTC */
 void calculerMontantsCommande(Commande *c) {
     c->montantBrutHT = 0.0;
@@ -34,12 +37,11 @@ void calculerMontantsCommande(Commande *c) {
 void creerCommande(Boutique *b) {
     printf("ID Client : ");
     int idClient = lireEntier();
-    int idx = trouverIndexClient(b, idClient);
-    if (idx == -1) {
+    Client *client = trouverClient(b, idClient);
+    if (client == NULL) {
         printf("Client introuvable.\n");
         return;
     }
-    Client *client = &b->clients[idx];
 
     // Réallocation si le tableau de commandes du client est plein
     if (client->nbCommandes >= client->capaciteCommandes) {

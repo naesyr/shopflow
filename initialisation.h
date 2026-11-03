@@ -1,7 +1,3 @@
-//
-// Created by marie on 28/10/2026.
-//
-
 #ifndef INITIALISATION_H
 #define INITIALISATION_H
 

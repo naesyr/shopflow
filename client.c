@@ -6,6 +6,11 @@
 #include "client.h"
 #include "commande.h"
 #include "utils.h"
+
+#define CAPACITE_INITIALE 10
+#define LONG_EMAIL 80
+#define LONG_TELEPHONE 15
+
 /* Agrandit dynamiquement la capacité du tableau de clients de la boutique. */
 static int agrandirRepertoire(Boutique *b)
 {
@@ -101,7 +106,7 @@ int clientACommandesActives(const Client *c)
     int i;
 
     for (i = 0; i < c->nbCommandes; i++) {
-        if (commandeEstActive(&c->commandes[i])) {
+        if (strcmp(c->commandes[i].statut, "ANNULEE") != 0){
             return 1;
         }
     }
@@ -327,7 +332,7 @@ void afficherClientDetaille(const Boutique *b)
         return;
     }
     for (j = 0; j < c->nbCommandes; j++) {
-        afficherResumeCommande(&c->commandes[j]);
+        printf("  - Cmd n°%d (%s) : %.2f EUR TTC\n", c->commandes[j].numero, c->commandes[j].statut, c->commandes[j].montantTTC);
     }
 }
 

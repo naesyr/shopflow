@@ -1,8 +1,3 @@
-
-//
-// Created by marie on 28/10/2026.
-//
-
 #include <stdlib.h>
 #include <string.h>
 #include "types.h"
