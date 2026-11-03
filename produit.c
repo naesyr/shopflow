@@ -212,7 +212,7 @@ void rechercheMultiCriteres(const Boutique *b)
         if (strcmp(categorie, "*") != 0 && strcmp(p->categorie, categorie) != 0) continue;
         if (p->prixUnitaireHT < pmin || p->prixUnitaireHT > pmax) continue;
         if (enStock && p->quantiteStock <= 0) continue;
-        afficherProduit(*p);
+        afficherProduit(* Produit);
         n++;
     }
     printf("%d resultat(s).\n", n);
