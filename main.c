@@ -1,4 +1,3 @@
-
 /* ==========================================================================
  * menu.c - Squelette de demarrage pour tester le projet (XTI101)
  * --------------------------------------------------------------------------
@@ -27,6 +26,8 @@
 #include "utils.h"
 #include "client.h"
 #include "produit.h"
+#include "initialisation.h"
+
 /* --------------------------------------------------------------------------
  * Lecture d'un choix au clavier (version simple, suffisant pour demarrer).
  * A remplacer plus tard par une saisie securisee (module utils.c).
@@ -39,6 +40,10 @@ static int lireChoix(void)
     {
         exit(EXIT_FAILURE); /* entree fermee : on quitte proprement */
     }
+    /* Nettoyage du buffer ajouté pour éviter les boucles infinies avec les vraies fonctions */
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+    
     return choix;
 }
 
@@ -48,31 +53,30 @@ static int lireChoix(void)
  * ========================================================================== */
 
 /* --- Module PRODUITS ------------------------------------------------------ */
-void ajouterProduit(void)      { printf("  [STUB] ajouterProduit - a implementer dans produit.c\n"); }
-void modifierProduit(void)     { printf("  [STUB] modifierProduit - a implementer dans produit.c\n"); }
-void supprimerProduit(void)    { printf("  [STUB] supprimerProduit - a implementer dans produit.c\n"); }
-void afficherCatalogue(void)   { printf("  [STUB] afficherCatalogue - a implementer dans produit.c\n"); }
+void ajouterProduitStub(void)      { printf("  [STUB] ajouterProduit - a implementer dans produit.c\n"); }
+void modifierProduitStub(void)     { printf("  [STUB] modifierProduit - a implementer dans produit.c\n"); }
+void supprimerProduitStub(void)    { printf("  [STUB] supprimerProduit - a implementer dans produit.c\n"); }
+void afficherCatalogueStub(void)   { printf("  [STUB] afficherCatalogue - a implementer dans produit.c\n"); }
 
 /* --- Module CLIENTS ------------------------------------------------------- */
-void ajouterClient(void)       { printf("  [STUB] ajouterClient - a implementer dans client.c\n"); }
-void modifierClient(void)      { printf("  [STUB] modifierClient - a implementer dans client.c\n"); }
-void supprimerClient(void)     { printf("  [STUB] supprimerClient - a implementer dans client.c\n"); }
-void afficherListeClients(void){ printf("  [STUB] afficherListeClients - a implementer dans client.c\n"); }
+/* STUBS SUPPRIMES (Etape 5 du cycle) car remplaces par les fonctions de client.c */
 
 /* --- Module COMMANDES ----------------------------------------------------- */
-void creerCommande(void)       { printf("  [STUB] creerCommande - a implementer dans commande.c\n"); }
-void afficherUneCommande(void) { printf("  [STUB] afficherUneCommande - a implementer dans commande.c\n"); }
+/* STUBS SUPPRIMES (Etape 5 du cycle) car remplaces par les fonctions de commande.c */
 
 /* --- Module STATISTIQUES -------------------------------------------------- */
-void afficherChiffreAffaires(void) { printf("  [STUB] afficherChiffreAffaires - a implementer dans statistique.c\n"); }
+void afficherPalmaresProduitsStub(void) { printf("  [STUB] afficherPalmaresProduits - a implementer dans statistique.c\n"); }
+void afficherPalmaresClientsStub(void) { printf("  [STUB] afficherPalmaresClients - a implementer dans statistique.c\n"); }
+void afficherAlertesStockStub(void) { printf("  [STUB] afficherAlertesStock - a implementer dans statistique.c\n"); }
 
 /* ==========================================================================
  * SOUS-MENUS : un seul motif a retenir, applique 4 fois.
  * Pour ajouter une fonctionnalite : un printf + un case + la borne max.
  * ========================================================================== */
 
-static void menuProduits(void)
+static void menuProduits(Boutique *b)
 {
+    (void)b; /* Pour eviter le warning du compilateur en attendant l'implementation */
     int choix;
     do
     {
@@ -86,17 +90,17 @@ static void menuProduits(void)
 
         switch (choix)
         {
-            case 1: ajouterProduit();    break;
-            case 2: modifierProduit();   break;
-            case 3: supprimerProduit();  break;
-            case 4: afficherCatalogue(); break;
+            case 1: ajouterProduitStub();    break;
+            case 2: modifierProduitStub();   break;
+            case 3: supprimerProduitStub();  break;
+            case 4: afficherCatalogueStub(); break;
             case 0:                      break; /* retour automatique */
             default: printf("  [!] Choix invalide.\n"); break;
         }
     } while (choix != 0);
 }
 
-static void menuClients(void)
+static void menuClients(Boutique *b)
 {
     int choix;
     do
@@ -106,22 +110,24 @@ static void menuClients(void)
         printf("  2. Modifier un client\n");
         printf("  3. Supprimer un client\n");
         printf("  4. Afficher la liste des clients\n");
+        printf("  5. Afficher la fiche detaillee d'un client\n"); /* Ajout pour utiliser la fonction existante */
         printf("  0. Retour au menu principal\n");
         choix = lireChoix();
 
         switch (choix)
         {
-            case 1: ajouterClient();        break;
-            case 2: modifierClient();       break;
-            case 3: supprimerClient();      break;
-            case 4: afficherListeClients(); break;
-            case 0:                         break;
+            case 1: saisirEtAjouterClient(b);      break;
+            case 2: modifierClient(b);             break;
+            case 3: supprimerClientInteractif(b);  break;
+            case 4: afficherListeClients(b);       break;
+            case 5: afficherClientDetaille(b);     break;
+            case 0:                                break;
             default: printf("  [!] Choix invalide.\n"); break;
         }
     } while (choix != 0);
 }
 
-static void menuCommandes(void)
+static void menuCommandes(Boutique *b)
 {
     int choix;
     do
@@ -129,33 +135,45 @@ static void menuCommandes(void)
         printf("\n===== GESTION DES COMMANDES =====\n");
         printf("  1. Creer une commande\n");
         printf("  2. Afficher une commande\n");
+        printf("  3. Changer le statut d'une commande\n");
+        printf("  4. Annuler une commande\n");
+        printf("  5. Modifier les lignes d'une commande\n");
         printf("  0. Retour au menu principal\n");
         choix = lireChoix();
 
         switch (choix)
         {
-            case 1: creerCommande();       break;
-            case 2: afficherUneCommande(); break;
-            case 0:                        break;
+            case 1: creerCommande(b);          break;
+            case 2: afficherDetailCommande(b); break;
+            case 3: changerStatutCommande(b);  break;
+            case 4: annulerCommande(b);        break;
+            case 5: modifierLignesCommande(b); break;
+            case 0:                            break;
             default: printf("  [!] Choix invalide.\n"); break;
         }
     } while (choix != 0);
 }
 
-static void menuStatistiques(void)
+static void menuStatistiques(Boutique *b)
 {
     int choix;
     do
     {
         printf("\n===== STATISTIQUES =====\n");
         printf("  1. Chiffre d'affaires global\n");
+        printf("  2. Palmares des produits\n");
+        printf("  3. Palmares des clients\n");
+        printf("  4. Alertes de stock\n");
         printf("  0. Retour au menu principal\n");
         choix = lireChoix();
 
         switch (choix)
         {
-            case 1: afficherChiffreAffaires(); break;
-            case 0:                            break;
+            case 1: calculerChiffreAffaires(b);      break; /* Fonction réelle implémentée */
+            case 2: afficherPalmaresProduitsStub();  break;
+            case 3: afficherPalmaresClientsStub();   break;
+            case 4: afficherAlertesStockStub();      break;
+            case 0:                                  break;
             default: printf("  [!] Choix invalide.\n"); break;
         }
     } while (choix != 0);
@@ -167,6 +185,14 @@ static void menuStatistiques(void)
 int main(void)
 {
     int choix;
+    Boutique maBoutique;
+
+    /* Initialisation obligatoire pour pouvoir passer 'maBoutique' aux menus */
+    memset(&maBoutique, 0, sizeof(Boutique));
+    
+    /* A DECOMMENTER QUAND LE MODULE INITIALISATION SERA PRET :
+    initialiserDonneesTest(&maBoutique); 
+    */
 
     printf("==============================================\n");
     printf("  SHOPFLOW - Boutique en ligne (squelette)\n");
@@ -184,16 +210,19 @@ int main(void)
 
         switch (choix)
         {
-            case 1: menuProduits();     break;
-            case 2: menuClients();      break;
-            case 3: menuCommandes();    break;
-            case 4: menuStatistiques(); break;
-            case 0: printf("\n  Au revoir !\n"); break;
+            case 1: menuProduits(&maBoutique);     break;
+            case 2: menuClients(&maBoutique);      break;
+            case 3: menuCommandes(&maBoutique);    break;
+            case 4: menuStatistiques(&maBoutique); break;
+            case 0: 
+                printf("\n  Au revoir !\n"); 
+                /* A DECOMMENTER POUR LIBERER LA MEMOIRE :
+                detruireBoutique(&maBoutique); 
+                */
+                break;
             default: printf("  [!] Choix invalide.\n"); break;
         }
     } while (choix != 0);
 
     return EXIT_SUCCESS;
 }
-
-
