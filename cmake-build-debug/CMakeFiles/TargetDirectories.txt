@@ -1,2 +1,0 @@
-/home/byakko/Documents/efrei 2026-2027/algo/shopflow/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/byakko/Documents/efrei 2026-2027/algo/shopflow/cmake-build-debug/CMakeFiles/rebuild_cache.dir
